@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive ServiceTitan Pricebook Guide</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 5px;
+            margin-top: 1rem;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #27ae60;
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 5px;
+        }
+        .nav-tabs {
+            display: flex;
+            background: #ecf0f1;
+            border-bottom: 1px solid #bdc3c7;
+            overflow-x: auto;
+        }
+        .nav-tab {
+            padding: 1rem 2rem;
+            cursor: pointer;
+            border: none;
+            background: none;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        .nav-tab.active {
+            background: white;
+            border-bottom: 3px solid #3498db;
+            color: #2c3e50;
+        }
+        .nav-tab:hover {
+            background: #d5dbdb;
+        }
+        .content {
+            padding: 2rem;
+        }
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+        .section.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .expandable {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+        .expandable-header {
+            background: #f8f9fa;
+            padding: 1rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+        .expandable-header:hover {
+            background: #e9ecef;
+        }
+        .expandable-content {
+            display: none;
+            padding: 1rem;
+            border-top: 1px solid #e0e0e0;
+        }
+        .expandable.open .expandable-content {
+            display: block;
+        }
+        .expandable.open .arrow {
+            transform: rotate(180deg);
+        }
+        .arrow {
+            transition: transform 0.3s ease;
+        }
+        .checklist {
+            background: #f1f8ff;
+            border-left: 4px solid #0366d6;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            margin: 0.5rem 0;
+        }
+        .checklist-item input[type="checkbox"] {
+            margin-right: 0.5rem;
+            transform: scale(1.2);
+        }
+        .example-box {
+            background: #fff5f5;
+            border: 1px solid #feb2b2;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .pricing-calculator {
+            background: #f0fff4;
+            border: 1px solid #9ae6b4;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .input-group {
+            margin: 0.5rem 0;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 0.25rem;
+            font-weight: 500;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        .btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s ease;
+        }
+        .btn:hover {
+            background: #2980b9;
+        }
+        .btn-success {
+            background: #27ae60;
+        }
+        .btn-success:hover {
+            background: #229954;
+        }
+        .alert {
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+        }
+        .alert-info {
+            background: #e1f5fe;
+            border: 1px solid #81d4fa;
+            color: #0277bd;
+        }
+        .alert-warning {
+            background: #fff8e1;
+            border: 1px solid #ffcc02;
+            color: #f57c00;
+        }
+        .step-counter {
+            background: #3498db;
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-weight: bold;
+        }
+        .interactive-demo {
+            border: 2px dashed #3498db;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            margin: 1rem 0;
+            background: #f8f9ff;
+        }
+        .demo-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        .tabs-container {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        .sub-tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .sub-tab {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            border: none;
+            background: none;
+            flex: 1;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .sub-tab.active {
+            background: white;
+            border-bottom: 2px solid #3498db;
+        }
+        .sub-content {
+            padding: 1rem;
+        }
+        .sub-section {
+            display: none;
+        }
+        .sub-section.active {
+            display: block;
+        }
+        .completion-badge {
+            background: #27ae60;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔧 Interactive ServiceTitan Pricebook Setup Guide</h1>
+            <p>For HVAC, Plumbing, Electrical, Refrigeration & Garage Door Professionals</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <p><span id="progressText">0%</span> Complete</p>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showSection('overview')">📋 Overview</button>
+            <button class="nav-tab" onclick="showSection('services')">⚙️ Services</button>
+            <button class="nav-tab" onclick="showSection('materials')">📦 Materials</button>
+            <button class="nav-tab" onclick="showSection('equipment')">🔨 Equipment</button>
+            <button class="nav-tab" onclick="showSection('connecting')">🔗 Connecting Items</button>
+            <button class="nav-tab" onclick="showSection('pricing')">💰 Dynamic Pricing</button>
+            <button class="nav-tab" onclick="showSection('vendors')">🏢 Vendors</button>
+            <button class="nav-tab" onclick="showSection('testing')">✅ Testing</button>
+        </div>
+
+        <div class="content">
+            <!-- Overview Section -->
+            <div id="overview" class="section active">
+                <h2>🎯 What You'll Master Today</h2>
+                
+                <div class="checklist">
+                    <h3>Your Learning Journey:</h3>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="overview-check" onchange="updateProgress()">
+                        <label for="overview-check">Understand pricebook fundamentals</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="services-check" onchange="updateProgress()">
+                        <label for="services-check">Create and organize services</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="materials-check" onchange="updateProgress()">
+                        <label for="materials-check">Set up materials with proper pricing</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="equipment-check" onchange="updateProgress()">
+                        <label for="equipment-check">Configure equipment and specifications</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="connecting-check" onchange="updateProgress()">
+                        <label for="connecting-check">Connect materials/equipment to services</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="pricing-check" onchange="updateProgress()">
+                        <label for="pricing-check">Master dynamic and customer-specific pricing</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="vendors-check" onchange="updateProgress()">
+                        <label for="vendors-check">Set up vendor relationships</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="testing-check" onchange="updateProgress()">
+                        <label for="testing-check">Test your complete pricebook</label>
+                    </div>
+                </div>
+
+                <div class="expandable">
+                    <div class="expandable-header" onclick="toggleExpandable(this)">
+                        What is a Pricebook? <span class="arrow">▼</span>
+                    </div>
+                    <div class="expandable-content">
+                        <p>A pricebook in ServiceTitan is your digital catalog of everything you can sell:</p>
+                        <ul>
+                            <li><strong>Services:</strong> What you do (install, repair, maintain)</li>
+                            <li><strong>Materials:</strong> Items consumed during work</li>
+                            <li><strong>Equipment:</strong> Items installed and left with customer</li>
+                        </ul>
+                        <p><strong>Why it matters:</strong> Consistent pricing, faster estimates, better profitability tracking!</p>
+                    </div>
+                </div>
+
+                <div class="expandable">
+                    <div class="expandable-header" onclick="toggleExpandable(this)">
+                        Before You Start - Preparation Checklist <span class="arrow">▼</span>
+                    </div>
+                    <div class="expandable-content">
+                        <div class="checklist">
+                            <div class="checklist-item">
+                                <input type="checkbox">
+                                <label>Admin access to ServiceTitan</label>
+                            </div>
+                            <div class="checklist-item">
+                                <input type="checkbox">
+                                <label>List of current services you offer</label>
+                            </div>
+                            <div class="checklist-item">
+                                <input type="checkbox">
+                                <label>Material costs from suppliers</label>
+                            </div>
+                            <div class="checklist-item">
+                                <input type="checkbox">
+                                <label>Equipment pricing information</label>
+                            </div>
+                            <div class="checklist-item">
+                                <input type="checkbox">
+                                <label>Vendor contact information</label>
+                            </div>
+                            <div class="checklist-item">
+                                <input type="checkbox">
+                                <label>Your desired profit margins</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-info">
+                    <strong>💡 Pro Tip:</strong> Start with your top 10 most common services. You can always expand later!
+                </div>
+            </div>
+
+            <!-- Services Section -->
+            <div id="services" class="section">
+                <h2><span class="step-counter">1</span>Setting Up Services</h2>
+                
+                <div class="interactive-demo">
+                    <h3>🎮 Interactive Service Builder</h3>
+                    <p>Practice creating a service with our simulator:</p>
+                    <div class="demo-buttons">
+                        <button class="btn" onclick="simulateServiceCreation('HVAC')">Create HVAC Service</button>
+                        <button class="btn" onclick="simulateServiceCreation('Plumbing')">Create Plumbing Service</button>
+                        <button class="btn" onclick="simulateServiceCreation('Electrical')">Create Electrical Service</button>
+                    </div>
+                    <div id="serviceDemo" style="margin-top: 1rem;"></div>
+                </div>
+
+                <div class="expandable">
+                    <div class="expandable-header" onclick="toggleExpandable(this)">
+                        Step-by-Step: Creating Service Categories <span class="arrow">▼</span>
+                    </div>
+                    <div class="expandable-content">
+                        <h4>Navigate to Pricebook:</h4>
+                        <ol>
+                            <li>Go to Settings → Pricebook</li>
+                            <li>Click "Services" tab</li>
+                            <li>Click "+ Add Category"</li>
+                        </ol>
+
+                        <h4>Recommended Category Structure:</h4>
+                        <div class="tabs-container">
+                            <div class="sub-tabs">
+                                <button class="sub-tab active" onclick="showSubSection('hvac-cats')">HVAC</button>
+                                <button class="sub-tab" onclick="showSubSection('plumb-cats')">Plumbing</button>
+                                <button class="sub-tab" onclick="showSubSection('elec-cats')">Electrical</button>
+                                <button class="sub-tab" onclick="showSubSection('garage-cats')">Garage Door</button>
+                            </div>
+                            <div class="sub-content">
+                                <div id="hvac-cats" class="sub-section active">
+                                    <ul>
+                                        <li>Heating Installation</li>
+                                        <li>Cooling Installation</li>
+                                        <li>HVAC Repair</li>
+                                        <li>Maintenance Services</li>
+                                        <li>Duct Services</li>
+                                        <li>Indoor Air Quality</li>
+                                    </ul>
+                                </div>
+                                <div id="plumb-cats" class="sub-section">
+                                    <ul>
+                                        <li>Water Heater Services</li>
+                                        <li>Drain Cleaning</li>
+                                        <li>Pipe Repair/Installation</li>
+                                        <li>Fixture Installation</li>
+                                        <li>Emergency Plumbing</li>
+                                        <li>Sewer Services</li>
+                                    </ul>
+                                </div>
+                                <div id="elec-cats" class="sub-section">
+                                    <ul>
+                                        <li>Panel Services</li>
+                                        <li>Outlet/Switch Installation</li>
+                                        <li>Lighting Services</li>
+                                        <li>Generator Services</li>
+                                        <li>Safety Inspections</li>
+                                        <li>Emergency Electrical</li>
+                                    </ul>
+                                </div>
+                                <div id="garage-cats" class="sub-section">
+                                    <ul>
+                                        <li>Door Installation</li>
+                                        <li>Opener Services</li>
+                                        <li>Spring Repair</li>
+                                        <li>Maintenance Services</li>
+                                        <li>Emergency Repair</li>
+                                        <li>Weatherproofing</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h4>📝 Example Service Setup:</h4>
+                    <div class="pricing-calculator">
+                        <h5>Service: Install Gas Furnace (80% AFUE)</h5>
+                        <div class="input-group">
+                            <label>SKU:</label>
+                            <input type="text" value="HVAC-FURN-80" readonly>
+                        </div>
+                        <div class="input-group">
+                            <label>Labor Hours:</label>
+                            <input type="number" value="6" readonly>
+                        </div>
+                        <div class="input-group">
+                            <label>Labor Rate ($/hour):</label>
+                            <input type="number" value="85" readonly>
+                        </div>
+                        <div class="input-group">
+                            <label>Total Labor Cost:</label>
+                            <input type="text" value="$510" readonly>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Materials Section -->
+            <div id="materials" class="section">
+                <h2><span class="step-counter">2</span>Setting Up Materials</h2>
+
+                <div class="pricing-calculator">
+                    <h3>🧮 Material Pricing Calculator</h3>
+                    <p>Practice calculating material pricing:</p>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="input-group">
+                            <label>Material Cost ($):</label>
+                            <input type="number" id="materialCost" placeholder="Enter cost" oninput="calculateMaterialPrice()">
+                        </div>
+                        <div class="input-group">
+                            <label>Markup (%):</label>
+                            <input type="number" id="materialMarkup" placeholder="Enter markup %" oninput="calculateMaterialPrice()">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>Selling Price:</label>
+                        <input type="text" id="materialSellingPrice" readonly>
+                    </div>
+                </div>
+
+                <div class="expandable">
+                    <div class="expandable-header" onclick="toggleExpandable(this)">
+                        Creating Material Categories <span class="arrow">▼</span>
+                    </div>
+                    <div class="expandable-content">
+                        <div class="tabs-container">
+                            <div class="sub-tabs">
+                                <button class="sub-tab active" onclick="showSubSection('hvac-mats')">HVAC Materials</button>
+                                <button class="sub-tab" onclick="showSubSection('plumb-mats')">Plumbing</button>
+                                <button class="sub-tab" onclick="showSubSection('elec-mats')">Electrical</button>
+                                <button class="sub-tab" onclick="showSubSection('general-mats')">General</button>
+                            </div>
+                            <div class="sub-content">
+                                <div id="hvac-mats" class="sub-section active">
+                                    <ul>
+                                        <li>Refrigerant (R-410A, R-22, etc.)</li>
+                                        <li>Filters (various sizes)</li>
+                                        <li>Ductwork materials</li>
+                                        <li>Insulation</li>
+                                        <li>Electrical components</li>
+                                        <li>Mounting hardware</li>
+                                    </ul>
+                                </div>
+                                <div id="plumb-mats" class="sub-section">
+                                    <ul>
+                                        <li>Pipes (copper, PVC, PEX)</li>
+                                        <li>Fittings and joints</li>
+                                        <li>Valves</li>
+                                        <li>Solder and flux</li>
+                                        <li>Pipe insulation</li>
+                                        <li>Drain cleaning chemicals</li>
+                                    </ul>
+                                </div>
+                                <div id="elec-mats" class="sub-section">
+                                    <ul>
+                                        <li>Wire (various gauges)</li>
+                                        <li>Conduit</li>
+                                        <li>Wire nuts</li>
+                                        <li>Electrical tape</li>
+                                        <li>Junction boxes</li>
+                                        <li>Breakers</li>
+                                    </ul>
+                                </div>
+                                <div id="general-mats" class="sub-section">
+                                    <ul>
+                                        <li>Screws and fasteners</li>
+                                        <li>Sealants and adhesives</li>
+                                        <li>Safety equipment</li>
+                                        <li>Cleaning supplies</li>
+                                        <li>Labels and tags</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-warning">
+                    <strong>⚠️ Markup Strategy:</strong> Typical markups range from 15-50%. Consider market conditions, competition, and your business model when setting markups.
+                </div>
+            </div>
+
+            <!-- Equipment Section -->
+            <div id="equipment" class="section">
+                <h2><span class="step-counter">3</span>Setting Up Equipment</h2>
+
+                <div class="expandable">
+                    <div class="expandable-header" onclick="toggleExpandable(this)">
+                        Equipment vs Materials: What's the Difference? <span class="arrow">▼</span>
+                    </div>
+                    <div class="expandable-content">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                            <div style="background: #e8f5e8; padding: 1rem; border-radius: 8px;">
+                                <h4>🔧 Materials</h4>
+                                <ul>
+                                    <li>Consumed during installation</li>
+                                    <li>Examples: pipe, wire, refrigerant</li>
+                                    <li>Usually measured in quantities</li>
+                                    <li>Lower individual cost</li>
+                                </ul>
+                            </div>
+                            <div style="background: #e8f4fd; padding: 1rem; border-radius: 8px;">
+                                <h4>🏠 Equipment</h4>
+                                <ul>
+                                    <li>Installed and remains with customer</li>
+                                    <li>Examples: furnace, water heater, panel</li>
+                                    <li>Usually sold as single units</li>
+                                    <li>Higher individual cost</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h4>📋 Equipment Information Template</h4>
+                    <div class="tabs-container">
+                        <div class="sub-tabs">
+                            <button class="sub-tab active" onclick="showSubSection('furnace-ex')">Furnace</button>
+                            <button class="sub-tab" onclick="showSubSection('wh-ex')">Water Heater</button>
+                            <button class="sub-tab" onclick="showSubSection('panel-ex')">Electrical Panel</button>
+                        </div>
+                        <div class="sub-content">
+                            <div id="furnace-ex" class="sub-section active">
+                                <strong>Equipment:</strong> Rheem 80% AFUE Gas Furnace<br>
+                                <strong>Model:</strong> R802TA075417MSA<br>
+                                <strong>SKU:</strong> HVAC-FURN-RH-80-75<br>
+                                <strong>Specifications:</strong> 75,000 BTU, 80% AFUE, Multi-speed blower<br>
+                                <strong>Warranty:</strong> 10-year heat exchanger, 5-year parts<br>
+                                <strong>Cost:</strong> $1,200 | <strong>Markup:</strong> 35% | <strong>Price:</strong> $1,620
+                            </div>
+                            <div id="wh-ex" class="sub-section">
+                                <strong>Equipment:</strong> AO Smith Gas Water Heater<br>
+                                <strong>Model:</strong> GPVX-50L<br>
+                                <strong>SKU:</strong> PLUMB-WH-AOS-50<br>
+                                <strong>Specifications:</strong> 50 gallon, 40,000 BTU, 6-year warranty<br>
+                                <strong>Cost:</strong> $485 | <strong>Markup:</strong> 40% | <strong>Price:</strong> $679
+                            </div>
+                            <div id="panel-ex" class="sub-section">
+                                <strong>Equipment:</strong> Square D Electrical Panel<br>
+                                <strong>Model:</strong> QO124L200GRB<br>
+                                <strong>SKU:</strong> ELEC-PAN-SQD-200<br>
+                                <strong>Specifications:</strong> 200A main, 24 circuits, NEMA 3R<br>
+                                <strong>Cost:</strong> $320 | <strong>Markup:</strong> 45% | <strong>Price:</strong> $464
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Connecting Items Section -->
+            <div id="connecting" class="section">
+                <h2><span class="step-counter">4</span>Connecting Materials & Equipment to Services</h2>
+
+                <div class="interactive-demo">
+                    <h3>🔗 Service Builder Simulator</h3>
+                    <p>Practice connecting items to a service:</p>
+                    <div id="serviceBuilder">
+                        <h4>Service: Water Heater Installation</h4>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 1rem 0;">
+                            <div>
+                                <h5>Available Materials:</h5>
+                                <button class="btn" style="display: block; margin: 0.25rem 0; width: 100%;" onclick="addToService('material', 'Gas line fitting', 15)">+ Gas line fitting ($15)</button>
+                                <button class="btn" style="display: block; margin: 0.25rem 0; width: 100%;" onclick="addToService('material', 'Vent pipe', 25)">+ Vent pipe ($25)</button>
+                                <button class="btn" style="display: block; margin: 0.25rem 0; width: 100%;" onclick="addToService('material', 'Drain pan', 20)">+ Drain pan ($20)</button>
+                            </div>
+                            <div>
+                                <h5>Available Equipment:</h5>
+                                <button class="btn" style="display: block; margin: 0.25rem 0; width: 100%;" onclick="addToService('equipment', '50-gal gas water heater', 679)">+ 50-gal gas water heater ($679)</button>
+                            </div>
+                        </div>
+                        <div id="serviceItems" style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                            <h5>Service Components:</h5>
+                            <div>Labor: $300 (4 hours × $75/hour)</div>
+                            <div id="materialsList"></div>
+                            <div id="equipmentsList"></div>
+                            <hr>
+                            <div><strong>Total Cost: $<span id="totalCost">300</span></strong></div>
+                            <div><strong>Service Price: $<span id="servicePrice">375</span> (25% markup)</strong></div>
+                        </div>
+                        <button class="btn btn-success" onclick="resetServiceBuilder()">Reset Demo</button>
+                    </div>
+                </div>
+
+                <div class="expandable">
+                    <div class="expandable-header" onclick="toggleExpandable(this)">
+                        Step-by-Step: Adding Items to Services <span class="arrow">▼</span>
+                    </div>
+                    <div class="expandable-content">
+                        <h4>The Easy Way to Connect Items:</h4>
+                        <ol>
+                            <li><strong>Edit Your Service:</strong> Go to Services tab → Click on service name</li>
+                            <li><strong>Scroll to Materials Section:</strong> Click "+ Add Material"</li>
+                            <li><strong>Search and Select:</strong> Type material name or SKU</li>
+                            <li><strong>Set Quantity:</strong> Enter how much is needed</li>
+                            <li><strong>Repeat for Equipment:</strong> Same process in Equipment section</li>
+                            <li><strong>Review Totals:</strong> System calculates final pricing automatically</li>
+                        </ol>
+
+                        <div class="alert alert-info">
+                            <strong>💡 Pro Tip:</strong> ServiceTitan automatically updates inventory levels when you attach materials to services!
+                        </div>
+                    </div>
+                </div>
+
+                <div class="expandable">
+                    <div class="expandable-header" onclick="toggleExpandable(this)">
+                        Common Connection Scenarios <span class="arrow">▼</span>
+                    </div>
+                    <div class="expandable-content">
+                        <div class="tabs-container">
+                            <div class="sub-tabs">
+                                <button class="sub-tab active" onclick="showSubSection('hvac-conn')">HVAC Install</button>
+                                <button class="sub-tab" onclick="showSubSection('plumb-conn')">Plumbing Repair</button>
+                                <button class="sub-tab" onclick="showSubSection('elec-conn')">Electrical Upgrade</button>
+                            </div>
+                            <div class="sub-content">
+                                <div id="hvac-conn" class="sub-section active">
+                                    <strong>AC Installation Service includes:</strong>
+                                    <ul>
+                                        <li><strong>Equipment:</strong> 3-ton AC unit</li>
+                                        <li><strong>Materials:</strong> Refrigerant lines, electrical wire, mounting brackets</li>
+                                        <li><strong>Labor:</strong> 8 hours installation time</li>
+                                    </ul>
+                                </div>
+                                <div id="plumb-conn" class="sub-section">
+                                    <strong>Pipe Repair Service includes:</strong>
+                                    <ul>
+                                        <li><strong>Materials:</strong> Copper pipe, fittings, solder, flux</li>
+                                        <li><strong>Labor:</strong> 2 hours repair time</li>
+                                        <li><strong>Note:</strong> No equipment needed for this service</li>
+                                    </ul>
+                                </div>
+                                <div id="elec-conn" class="sub-section">
+                                    <strong>Panel Upgrade Service includes:</strong>
+                                    <ul>
+                                        <li><strong>Equipment:</strong> 200A electrical panel</li>
+                                        <li><strong>Materials:</strong> Wire, breakers, conduit, meter socket</li>
+                                        <li><strong>Labor:</strong> 6 hours installation time</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dynamic Pricing Section -->
+            <div id="pricing" class="section">
+                <h2><span class="step-counter">5</span>Dynamic & Customer-Specific Pricing</h2>
+
+                <div class="alert alert-info">
+                    <strong>🎯 What You'll Learn:</strong> How to set up automatic pricing rules that adjust based on conditions like customer type, job size, or market conditions.
+                </div>
+
+                <div class="expandable">
+                    <div class="expandable-header" onclick="toggleExpandable(this)">
+                        Dynamic Pricing Rules <span class="arrow">▼</span>
+                    </div>
+                    <div class="expandable-content">
+                        <h4>Types of Dynamic Pricing:</h4>
+                        
+                        <div class="tabs-container">
+                            <div class="sub-tabs">
+                                <button class="sub-tab active" onclick="showSubSection('time-pricing')">Time-Based</button>
+                                <button class="sub-tab" onclick="showSubSection('volume-pricing')">Volume-Based</button>
+                                <button class="sub-tab" onclick="showSubSection('emergency-pricing')">Emergency</button>
+                                <button class="sub-tab" onclick="showSubSection('seasonal-pricing')">Seasonal</button>
+                            </div>
+                            <div class="sub-content">
+                                <div id="time-pricing" class="sub-section active">
+                                    <h5>⏰ Time-Based Pricing Rules</h5>
+                                    <ul>
+                                        <li><strong>After Hours:</strong> +25% after 6 PM weekdays</li>
+                                        <li><strong>Weekend:</strong> +20% on weekends</li>
+                                        <li><strong>Holiday:</strong> +50% on major holidays</li>
+                                    </ul>
+                                    <div class="example-box">
+                                        <strong>Example:</strong> Standard service call = $150<br>
+                                        Evening call (after 6 PM) = $150 × 1.25 = $187.50
+                                    </div>
+                                </div>
+                                <div id="volume-pricing" class="sub-section">
+                                    <h5>📊 Volume-Based Pricing</h5>
+                                    <ul>
+                                        <li><strong>Multi-unit discounts:</strong> 5% off for 2+ units</li>
+                                        <li><strong>Bulk material:</strong> 10% off for large quantities</li>
+                                        <li><strong>Package deals:</strong> Maintenance agreements</li>
+                                    </ul>
+                                    <div class="example-box">
+                                        <strong>Example:</strong> Single AC tune-up = $150<br>
+                                        2 AC units = $150 × 2 × 0.95 = $285 (5% discount)
+                                    </div>
+                                </div>
+                                <div id="emergency-pricing" class="sub-section">
+                                    <h5>🚨 Emergency Pricing</h5>
+                                    <ul>
+                                        <li><strong>Same-day service:</strong> +30% for urgent calls</li>
+                                        <li><strong>Emergency repairs:</strong> +40% for true emergencies</li>
+                                        <li><strong>Weather-related:</strong> +25% during storms</li>
+                                    </ul>
+                                </div>
+                                <div id="seasonal-pricing" class="sub-section">
+                                    <h5>🌡️ Seasonal Adjustments</h5>
+                                    <ul>
+                                        <li><strong>Peak season:</strong> +15% during summer (AC) / winter (heating)</li>
+                                        <li><strong>Off-season:</strong> -10% during slow periods</li>
+                                        <li><strong>Weather-dependent:</strong> Automatic adjustments based on temperature</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h4>Setting Up Dynamic Rules in ServiceTitan:</h4>
+                        <ol>
+                            <li>Go to Settings → Pricebook → Pricing Rules</li>
+                            <li>Click "+ Add Rule"</li>
+                            <li>Set conditions (time, date, customer type)</li>
+                            <li>Define pricing adjustment (% or $ amount)</li>
+                            <li>Apply to specific services or categories</li>
+                            <li>Test with sample scenarios</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="expandable">
+                    <div class="expandable-header" onclick="toggleExpandable(this)">
+                        Customer-Specific Pricing <span class="arrow">▼</span>
+                    </div>
+                    <div class="expandable-content">
+                        <h4>Types of Customer Pricing:</h4>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                            <div style="background: #f0f8ff; padding: 1rem; border-radius: 8px;">
+                                <h5>🏢 Commercial Customers</h5>
+                                <ul>
+                                    <li>Volume discounts: 10-15% off</li>
+                                    <li>Contract pricing: Fixed rates</li>
+                                    <li>Payment terms: Net 30</li>
+                                    <li>Bulk service packages</li>
+                                </ul>
+                            </div>
+                            <div style="background: #f0fff0; padding: 1rem; border-radius: 8px;">
+                                <h5>🏠 Residential VIP</h5>
+                                <ul>
+                                    <li>Maintenance members: 15% off</li>
+                                    <li>Loyalty customers: 5-10% off</li>
+                                    <li>Senior citizens: 10% off</li>
+                                    <li>Referral rewards: Credits</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <h4>Setting Up Customer Pricing:</h4>
+                        <ol>
+                            <li><strong>Create Customer Groups:</strong>
+                                <ul>
+                                    <li>Go to Settings → Customer → Customer Types</li>
+                                    <li>Add types: VIP, Commercial, Senior, etc.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Assign Pricing Rules:</strong>
+                                <ul>
+                                    <li>Link customer types to pricing rules</li>
+                                    <li>Set automatic discounts</li>
+                                </ul>
+                            </li>
+                            <li><strong>Individual Customer Pricing:</strong>
+                                <ul>
+                                    <li>Override default pricing for specific customers</li>
+                                    <li>Set contract rates</li>
+                                </ul>
+                            </li>
+                        </ol>
+
+                        <div class="pricing-calculator">
+                            <h5>💰 Customer Pricing Calculator</h5>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <div class="input-group">
+                                    <label>Base Service Price ($):</label>
+                                    <input type="number" id="basePrice" value="200" oninput="calculateCustomerPrice()">
+                                </div>
+                                <div class="input-group">
+                                    <label>Customer Type:</label>
+                                    <select id="customerType" onchange="calculateCustomerPrice()">
+                                        <option value="standard">Standard</option>
+                                        <option value="vip">VIP Member (-15%)</option>
+                                        <option value="commercial">Commercial (-10%)</option>
+                                        <option value="senior">Senior (-10%)</option>
+                                        <option value="emergency">Emergency (+30%)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label>Final Price:</label>
+                                <input type="text" id="finalPrice" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-warning">
+                    <strong>⚠️ Important:</strong> Always ensure your pricing rules don't conflict with each other. Test thoroughly before going live!
+                </div>
+            </div>
+
+            <!-- Vendors Section -->
+            <div id="vendors" class="section">
+                <h2><span class="step-counter">6</span>Setting Up Vendors</h2>
+
+                <div class="expandable">
+                    <div class="expandable-header" onclick="toggleExpandable(this)">
+                        Why Vendor Setup Matters <span class="arrow">▼</span>
+                    </div>
+                    <div class="expandable-content">
+                        <ul>
+                            <li>🛒 <strong>Streamlined Purchasing:</strong> Generate POs directly from ServiceTitan</li>
+                            <li>💰 <strong>Cost Tracking:</strong> Monitor price changes and find best deals</li>
+                            <li>📊 <strong>Spend Analysis:</strong> Track spending by vendor</li>
+                            <li>⚡ <strong>Automated Workflows:</strong> Auto-create orders when inventory is low</li>
+                            <li>🤝 <strong>Relationship Management:</strong> Store contact info and terms</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="expandable">
+                    <div class="expandable-header" onclick="toggleExpandable(this)">
+                        Step-by-Step Vendor Setup <span class="arrow">▼</span>
+                    </div>
+                    <div class="expandable-content">
+                        <h4>Adding a New Vendor:</h4>
+                        <ol>
+                            <li>Go to Settings → Vendors</li>
+                            <li>Click "+ Add Vendor"</li>
+                            <li>Fill in basic information</li>
+                            <li>Set up payment terms</li>
+                            <li>Configure ordering preferences</li>
+                        </ol>
+
+                        <div class="example-box">
+                            <h5>📋 Vendor Information Template:</h5>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <div>
+                                    <strong>Company Name:</strong> ABC Supply Co.<br>
+                                    <strong>Contact:</strong> John Smith<br>
+                                    <strong>Phone:</strong> (555) 123-4567<br>
+                                    <strong>Email:</strong> orders@abcsupply.com<br>
+                                    <strong>Address:</strong> 123 Industrial Blvd
+                                </div>
+                                <div>
+                                    <strong>Account #:</strong> 12345<br>
+                                    <strong>Payment Terms:</strong> Net 30<br>
+                                    <strong>Delivery:</strong> Free over $100<br>
+                                    <strong>Rep:</strong> Sarah Johnson<br>
+                                    <strong>Tax ID:</strong> 12-3456789
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="expandable">
+                    <div class="expandable-header" onclick="toggleExpandable(this)">
+                        Connecting Vendors to Materials/Equipment <span class="arrow">▼</span>
+                    </div>
+                    <div class="expandable-content">
+                        <h4>The Easy Connection Process:</h4>
+                        <ol>
+                            <li><strong>Edit Your Material/Equipment:</strong> Click on item name</li>
+                            <li><strong>Find Vendor Section:</strong> Scroll to vendor information</li>
+                            <li><strong>Select Primary Vendor:</strong> Choose from dropdown</li>
+                            <li><strong>Add Vendor Details:</strong>
+                                <ul>
+                                    <li>Vendor SKU (their part number)</li>
+                                    <li>Last purchase price</li>
+                                    <li>Lead time (days to deliver)</li>
+                                    <li>Minimum order quantity</li>
+                                </ul>
+                            </li>
+                            <li><strong>Add Alternate Vendors:</strong> For backup pricing</li>
+                        </ol>
+
+                        <div class="interactive-demo">
+                            <h5>🔗 Vendor Connection Demo</h5>
+                            <p>Practice connecting a vendor to materials:</p>
+                            <div id="vendorDemo">
+                                <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                                    <strong>Material:</strong> 1/2" Copper Pipe Type L<br>
+                                    <strong>Current Vendors:</strong> <span id="vendorList">None</span>
+                                </div>
+                                <div class="demo-buttons">
+                                    <button class="btn" onclick="addVendor('ABC Supply', 'CU-PIPE-05', '$3.25/ft', '2 days')">+ ABC Supply</button>
+                                    <button class="btn" onclick="addVendor('Home Depot Pro', 'HD-CP-12', '$3.50/ft', '1 day')">+ Home Depot Pro</button>
+                                    <button class="btn" onclick="addVendor('Ferguson', 'FG-CU-05', '$3.15/ft', '3 days')">+ Ferguson</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Testing Section -->
+            <div id="testing" class="section">
+                <h2><span class="step-counter">7</span>Testing Your Pricebook</h2>
+
+                <div class="checklist">
+                    <h3>🧪 Pre-Launch Testing Checklist:</h3>
+                    <div class="checklist-item">
+                        <input type="checkbox">
+                        <label>Create test estimate with your most common service</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox">
+                        <label>Verify all materials appear correctly</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox">
+                        <label>Check equipment pricing calculations</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox">
+                        <label>Test dynamic pricing rules</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox">
+                        <label>Verify customer-specific pricing</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox">
+                        <label>Check vendor information accuracy</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox">
+                        <label>Test on mobile device (technician view)</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox">
+                        <label>Train team on new pricebook</label>
+                    </div>
+                </div>
+
+                <div class="expandable">
+                    <div class="expandable-header" onclick="toggleExpandable(this)">
+                        Creating Test Estimates <span class="arrow">▼</span>
+                    </div>
+                    <div class="expandable-content">
+                        <h4>Step-by-Step Testing Process:</h4>
+                        <ol>
+                            <li><strong>Create New Estimate:</strong>
+                                <ul>
+                                    <li>Go to Estimates → New Estimate</li>
+                                    <li>Use a test customer or create "Test Customer"</li>
+                                </ul>
+                            </li>
+                            <li><strong>Add Services from Pricebook:</strong>
+                                <ul>
+                                    <li>Select services you've just created</li>
+                                    <li>Check that materials auto-populate</li>
+                                    <li>Verify equipment appears</li>
+                                </ul>
+                            </li>
+                            <li><strong>Test Pricing Rules:</strong>
+                                <ul>
+                                    <li>Try different customer types</li>
+                                    <li>Test time-based pricing</li>
+                                    <li>Check volume discounts</li>
+                                </ul>
+                            </li>
+                            <li><strong>Review Final Numbers:</strong>
+                                <ul>
+                                    <li>Labor + Materials + Equipment = Total</li>
+                                    <li>Profit margins meet targets</li>
+                                    <li>Pricing competitive but profitable</li>
+                                </ul>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="expandable">
+                    <div class="expandable-header" onclick="toggleExpandable(this)">
+                        Common Issues & Solutions <span class="arrow">▼</span>
+                    </div>
+                    <div class="expandable-content">
+                        <div class="tabs-container">
+                            <div class="sub-tabs">
+                                <button class="sub-tab active" onclick="showSubSection('pricing-issues')">Pricing Issues</button>
+                                <button class="sub-tab" onclick="showSubSection('material-issues')">Material Issues</button>
+                                <button class="sub-tab" onclick="showSubSection('vendor-issues')">Vendor Issues</button>
+                            </div>
+                            <div class="sub-content">
+                                <div id="pricing-issues" class="sub-section active">
+                                    <h5>💰 Common Pricing Problems:</h5>
+                                    <ul>
+                                        <li><strong>Prices too high:</strong> Check markup calculations</li>
+                                        <li><strong>Prices too low:</strong> Include all costs (overhead, insurance)</li>
+                                        <li><strong>Inconsistent pricing:</strong> Review pricing rules for conflicts</li>
+                                        <li><strong>Dynamic rules not working:</strong> Check conditions and date ranges</li>
+                                    </ul>
+                                </div>
+                                <div id="material-issues" class="sub-section">
+                                    <h5>📦 Material & Equipment Problems:</h5>
+                                    <ul>
+                                        <li><strong>Missing materials:</strong> Check service connections</li>
+                                        <li><strong>Wrong quantities:</strong> Verify material requirements</li>
+                                        <li><strong>Outdated prices:</strong> Update vendor pricing regularly</li>
+                                        <li><strong>SKU conflicts:</strong> Ensure unique identifiers</li>
+                                    </ul>
+                                </div>
+                                <div id="vendor-issues" class="sub-section">
+                                    <h5>🏢 Vendor Connection Problems:</h5>
+                                    <ul>
+                                        <li><strong>Missing vendor info:</strong> Complete all required fields</li>
+                                        <li><strong>Wrong part numbers:</strong> Verify with vendor catalogs</li>
+                                        <li><strong>Outdated contact info:</strong> Regular vendor information reviews</li>
+                                        <li><strong>Payment terms errors:</strong> Confirm with accounting</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-info">
+                    <strong>🎯 Success Metrics:</strong> Track quote-to-close rates, profit margins, and technician feedback to measure pricebook effectiveness.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSection = 'overview';
+        let serviceCost = 300; // Base labor cost for demo
+        let materialCosts = [];
+        let equipmentCosts = [];
+        let vendorConnections = [];
+
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+            
+            currentSection = sectionId;
+        }
+
+        function showSubSection(sectionId) {
+            // Get parent container
+            const parent = event.target.closest('.tabs-container');
+            
+            // Remove active from all sub-tabs in this container
+            parent.querySelectorAll('.sub-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active from all sub-sections in this container
+            parent.querySelectorAll('.sub-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Add active to clicked tab
+            event.target.classList.add('active');
+            
+            // Show selected sub-section
+            parent.querySelector('#' + sectionId).classList.add('active');
+        }
+
+        function toggleExpandable(header) {
+            const expandable = header.parentElement;
+            expandable.classList.toggle('open');
+        }
+
+        function updateProgress() {
+            const checkboxes = document.querySelectorAll('.checklist input[type="checkbox"]');
+            const checked = document.querySelectorAll('.checklist input[type="checkbox"]:checked');
+            const progress = (checked.length / checkboxes.length) * 100;
+            
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('progressText').textContent = Math.round(progress) + '%';
+        }
+
+        function calculateMaterialPrice() {
+            const cost = parseFloat(document.getElementById('materialCost').value) || 0;
+            const markup = parseFloat(document.getElementById('materialMarkup').value) || 0;
+            const sellingPrice = cost * (1 + markup / 100);
+            
+            document.getElementById('materialSellingPrice').value = '$' + sellingPrice.toFixed(2);
+        }
+
+        function calculateCustomerPrice() {
+            const basePrice = parseFloat(document.getElementById('basePrice').value) || 0;
+            const customerType = document.getElementById('customerType').value;
+            
+            let multiplier = 1;
+            switch(customerType) {
+                case 'vip': multiplier = 0.85; break;
+                case 'commercial': multiplier = 0.90; break;
+                case 'senior': multiplier = 0.90; break;
+                case 'emergency': multiplier = 1.30; break;
+                default: multiplier = 1;
+            }
+            
+            const finalPrice = basePrice * multiplier;
+            document.getElementById('finalPrice').value = '$' + finalPrice.toFixed(2);
+        }
+
+        function simulateServiceCreation(industry) {
+            const services = {
+                'HVAC': {
+                    name: 'Install 3-Ton AC Unit',
+                    sku: 'HVAC-AC-3T',
+                    labor: '8 hours × $85 = $680',
+                    description: 'Complete installation of 16 SEER AC unit including electrical connections and refrigerant lines'
+                },
+                'Plumbing': {
+                    name: 'Water Heater Installation',
+                    sku: 'PLUMB-WH-50',
+                    labor: '4 hours × $75 = $300',
+                    description: 'Install 50-gallon gas water heater with new venting and safety shutoffs'
+                },
+                'Electrical': {
+                    name: 'Panel Upgrade to 200A',
+                    sku: 'ELEC-PAN-200',
+                    labor: '6 hours × $95 = $570',
+                    description: 'Upgrade electrical panel to 200A service with new main breaker and grounding'
+                }
+            };
+            
+            const service = services[industry];
+            document.getElementById('serviceDemo').innerHTML = `
+                <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                    <h4>✅ Service Created!</h4>
+                    <strong>Name:</strong> ${service.name}<br>
+                    <strong>SKU:</strong> ${service.sku}<br>
+                    <strong>Labor:</strong> ${service.labor}<br>
+                    <strong>Description:</strong> ${service.description}<br>
+                    <div style="margin-top: 1rem; padding: 0.5rem; background: #d4edda; border-radius: 4px;">
+                        <strong>Next:</strong> Add materials and equipment to complete this service!
+                    </div>
+                </div>
+            `;
+        }
+
+        function addToService(type, item, cost) {
+            if (type === 'material') {
+                materialCosts.push({name: item, cost: cost});
+            } else {
+                equipmentCosts.push({name: item, cost: cost});
+            }
+            updateServiceBuilder();
+        }
+
+        function updateServiceBuilder() {
+            const materialsList = document.getElementById('materialsList');
+            const equipmentsList = document.getElementById('equipmentsList');
+            const totalCost = document.getElementById('totalCost');
+            const servicePrice = document.getElementById('servicePrice');
+            
+            let materialsHtml = '';
+            let materialsTotal = 0;
+            materialCosts.forEach(item => {
+                materialsHtml += `<div>Material: ${item.name} - $${item.cost}</div>`;
+                materialsTotal += item.cost;
+            });
+            materialsList.innerHTML = materialsHtml;
+            
+            let equipmentHtml = '';
+            let equipmentTotal = 0;
+            equipmentCosts.forEach(item => {
+                equipmentHtml += `<div>Equipment: ${item.name} - $${item.cost}</div>`;
+                equipmentTotal += item.cost;
+            });
+            equipmentsList.innerHTML = equipmentHtml;
+            
+            const total = serviceCost + materialsTotal + equipmentTotal;
+            const finalPrice = total * 1.25; // 25% markup
+            
+            totalCost.textContent = total;
+            servicePrice.textContent = finalPrice.toFixed(2);
+        }
+
+        function resetServiceBuilder() {
+            materialCosts = [];
+            equipmentCosts = [];
+            updateServiceBuilder();
+        }
+
+        function addVendor(name, sku, price, leadTime) {
+            vendorConnections.push({name, sku, price, leadTime});
+            updateVendorList();
+        }
+
+        function updateVendorList() {
+            const vendorList = document.getElementById('vendorList');
+            if (vendorConnections.length === 0) {
+                vendorList.textContent = 'None';
+                return;
+            }
+            
+            let html = '';
+            vendorConnections.forEach((vendor, index) => {
+                html += `<div style="margin: 0.25rem 0; padding: 0.25rem; background: #e8f5e8; border-radius: 4px;">
+                    <strong>${vendor.name}:</strong> ${vendor.sku} - ${vendor.price} (${vendor.leadTime})
+                </div>`;
+            });
+            vendorList.innerHTML = html;
+        }
+
+        // Initialize calculators
+        document.addEventListener('DOMContentLoaded', function() {
+            calculateCustomerPrice();
+            updateServiceBuilder();
+        });
+    </script>
+</body>
+</html>
