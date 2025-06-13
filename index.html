@@ -278,6 +278,7 @@
             <button class="nav-tab" onclick="showSection('connecting')">🔗 Connecting Items</button>
             <button class="nav-tab" onclick="showSection('pricing')">💰 Dynamic Pricing</button>
             <button class="nav-tab" onclick="showSection('vendors')">🏢 Vendors</button>
+            <button class="nav-tab" onclick="showSection('inventory')">📊 Inventory</button>
             <button class="nav-tab" onclick="showSection('testing')">✅ Testing</button>
         </div>
 
@@ -471,11 +472,11 @@
                         </div>
                         <div class="input-group">
                             <label>Labor Rate ($/hour):</label>
-                            <input type="number" value="85" readonly>
+                            <input type="number" value="300" readonly>
                         </div>
                         <div class="input-group">
                             <label>Total Labor Cost:</label>
-                            <input type="text" value="$510" readonly>
+                            <input type="text" value="$1,800" readonly>
                         </div>
                     </div>
                 </div>
@@ -657,12 +658,12 @@
                         </div>
                         <div id="serviceItems" style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin: 1rem 0;">
                             <h5>Service Components:</h5>
-                            <div>Labor: $300 (4 hours × $75/hour)</div>
+                            <div>Labor: $1,200 (4 hours × $300/hour)</div>
                             <div id="materialsList"></div>
                             <div id="equipmentsList"></div>
                             <hr>
-                            <div><strong>Total Cost: $<span id="totalCost">300</span></strong></div>
-                            <div><strong>Service Price: $<span id="servicePrice">375</span> (25% markup)</strong></div>
+                            <div><strong>Total Cost: $<span id="totalCost">1200</span></strong></div>
+                            <div><strong>Service Price: $<span id="servicePrice">1500</span> (25% markup)</strong></div>
                         </div>
                         <button class="btn btn-success" onclick="resetServiceBuilder()">Reset Demo</button>
                     </div>
@@ -985,6 +986,271 @@
                 </div>
             </div>
 
+            <!-- Inventory & Replenishment Section -->
+            <div id="inventory" class="section">
+                <h2><span class="step-counter">8</span>Inventory Management & Replenishment</h2>
+
+                <div class="alert alert-info">
+                    <strong>🎯 Why This Matters:</strong> Proper setup of vendors, materials, and equipment creates a powerful automated inventory system that saves time, money, and prevents job delays.
+                </div>
+
+                <div class="expandable">
+                    <div class="expandable-header" onclick="toggleExpandable(this)">
+                        The Business Impact of Proper Setup <span class="arrow">▼</span>
+                    </div>
+                    <div class="expandable-content">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                            <div style="background: #f0f8ff; padding: 1rem; border-radius: 8px;">
+                                <h5>💰 Financial Benefits</h5>
+                                <ul>
+                                    <li><strong>Cost Control:</strong> Track price changes and negotiate better deals</li>
+                                    <li><strong>Bulk Purchasing:</strong> Automatic quantity calculations for volume discounts</li>
+                                    <li><strong>Cash Flow:</strong> Optimize ordering to manage working capital</li>
+                                    <li><strong>Loss Prevention:</strong> Track material usage vs. jobs to identify waste</li>
+                                </ul>
+                            </div>
+                            <div style="background: #f0fff0; padding: 1rem; border-radius: 8px;">
+                                <h5>⚡ Operational Benefits</h5>
+                                <ul>
+                                    <li><strong>No Stockouts:</strong> Automatic reorder points prevent job delays</li>
+                                    <li><strong>Technician Efficiency:</strong> Parts available when needed</li>
+                                    <li><strong>Customer Satisfaction:</strong> Complete jobs on first visit</li>
+                                    <li><strong>Competitive Advantage:</strong> Faster response times</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="expandable">
+                    <div class="expandable-header" onclick="toggleExpandable(this)">
+                        How ServiceTitan Automates Inventory <span class="arrow">▼</span>
+                    </div>
+                    <div class="expandable-content">
+                        <h4>🔄 The Automated Workflow:</h4>
+                        <ol style="background: #f8f9fa; padding: 1rem; border-radius: 8px;">
+                            <li><strong>Job Completion:</strong> Technician completes service using pricebook items</li>
+                            <li><strong>Automatic Deduction:</strong> Materials automatically removed from inventory</li>
+                            <li><strong>Reorder Trigger:</strong> When stock hits minimum level, system alerts purchasing</li>
+                            <li><strong>PO Generation:</strong> ServiceTitan creates purchase order using vendor info</li>
+                            <li><strong>Cost Tracking:</strong> System updates material costs with new vendor pricing</li>
+                            <li><strong>Profitability Analysis:</strong> Real-time job profitability based on actual costs</li>
+                        </ol>
+
+                        <div class="example-box">
+                            <h5>📋 Real-World Example:</h5>
+                            <strong>Scenario:</strong> Your technician installs a water heater<br>
+                            <strong>What happens automatically:</strong>
+                            <ul>
+                                <li>1 water heater removed from equipment inventory</li>
+                                <li>Gas line fitting, vent pipe, drain pan removed from materials</li>
+                                <li>When water heater stock hits 2 units (your minimum), system alerts purchasing</li>
+                                <li>Purchase order auto-generated for your preferred vendor</li>
+                                <li>Job cost calculated with actual material prices (not estimates)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pricing-calculator">
+                    <h3>📊 Inventory Cost Impact Calculator</h3>
+                    <p>See how proper inventory setup affects your bottom line:</p>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="input-group">
+                            <label>Jobs per Month:</label>
+                            <input type="number" id="jobsPerMonth" value="100" oninput="calculateInventoryImpact()">
+                        </div>
+                        <div class="input-group">
+                            <label>Average Materials per Job ($):</label>
+                            <input type="number" id="avgMaterialsPerJob" value="150" oninput="calculateInventoryImpact()">
+                        </div>
+                        <div class="input-group">
+                            <label>Bulk Purchase Discount (%):</label>
+                            <input type="number" id="bulkDiscount" value="8" oninput="calculateInventoryImpact()">
+                        </div>
+                        <div class="input-group">
+                            <label>Emergency Purchase Premium (%):</label>
+                            <input type="number" id="emergencyPremium" value="25" oninput="calculateInventoryImpact()">
+                        </div>
+                    </div>
+                    
+                    <div style="background: #e8f5e8; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                        <h5>💰 Annual Impact:</h5>
+                        <div><strong>Monthly Material Spend:</strong> $<span id="monthlySpend">15,000</span></div>
+                        <div><strong>Annual Savings with Bulk Purchasing:</strong> $<span id="annualSavings">14,400</span></div>
+                        <div><strong>Cost of 10% Emergency Purchases:</strong> $<span id="emergencyCost">4,500</span></div>
+                        <div style="font-size: 1.2em; margin-top: 0.5rem;"><strong>Net Annual Benefit:</strong> $<span id="netBenefit">9,900</span></div>
+                    </div>
+                </div>
+
+                <div class="expandable">
+                    <div class="expandable-header" onclick="toggleExpandable(this)">
+                        Setting Up Inventory Parameters <span class="arrow">▼</span>
+                    </div>
+                    <div class="expandable-content">
+                        <h4>Key Inventory Settings for Each Item:</h4>
+                        
+                        <div class="tabs-container">
+                            <div class="sub-tabs">
+                                <button class="sub-tab active" onclick="showSubSection('min-max')">Min/Max Levels</button>
+                                <button class="sub-tab" onclick="showSubSection('reorder')">Reorder Points</button>
+                                <button class="sub-tab" onclick="showSubSection('locations')">Locations</button>
+                            </div>
+                            <div class="sub-content">
+                                <div id="min-max" class="sub-section active">
+                                    <h5>📊 Minimum and Maximum Stock Levels</h5>
+                                    <div class="pricing-calculator">
+                                        <h6>Stock Level Calculator</h6>
+                                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                            <div class="input-group">
+                                                <label>Usage per Month:</label>
+                                                <input type="number" id="usagePerMonth" value="20" oninput="calculateStockLevels()">
+                                            </div>
+                                            <div class="input-group">
+                                                <label>Lead Time (days):</label>
+                                                <input type="number" id="leadTimeDays" value="7" oninput="calculateStockLevels()">
+                                            </div>
+                                            <div class="input-group">
+                                                <label>Safety Buffer (%):</label>
+                                                <input type="number" id="safetyBuffer" value="25" oninput="calculateStockLevels()">
+                                            </div>
+                                            <div class="input-group">
+                                                <label>Order Quantity:</label>
+                                                <input type="number" id="orderQuantity" value="50" oninput="calculateStockLevels()">
+                                            </div>
+                                        </div>
+                                        <div style="background: #f0f8ff; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                                            <div><strong>Minimum Stock Level:</strong> <span id="minStock">8</span> units</div>
+                                            <div><strong>Maximum Stock Level:</strong> <span id="maxStock">58</span> units</div>
+                                            <div><strong>Reorder Point:</strong> <span id="reorderPoint">10</span> units</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="reorder" class="sub-section">
+                                    <h5>🔔 Automatic Reorder Triggers</h5>
+                                    <ul>
+                                        <li><strong>Stock Level Trigger:</strong> Reorder when quantity drops below minimum</li>
+                                        <li><strong>Time-Based Trigger:</strong> Reorder every X days regardless of stock</li>
+                                        <li><strong>Usage Pattern Trigger:</strong> Reorder based on historical consumption</li>
+                                        <li><strong>Seasonal Adjustment:</strong> Increase orders before busy seasons</li>
+                                    </ul>
+                                    
+                                    <div class="example-box">
+                                        <h6>Example Reorder Settings:</h6>
+                                        <strong>High-Usage Item (Filters):</strong><br>
+                                        • Min: 50 units • Max: 200 units • Reorder: 75 units<br><br>
+                                        <strong>Low-Usage Item (Specialty Parts):</strong><br>
+                                        • Min: 2 units • Max: 10 units • Reorder: 5 units
+                                    </div>
+                                </div>
+                                <div id="locations" class="sub-section">
+                                    <h5>📍 Inventory Locations</h5>
+                                    <ul>
+                                        <li><strong>Warehouse/Shop:</strong> Main inventory storage</li>
+                                        <li><strong>Truck Stock:</strong> Technician vehicle inventory</li>
+                                        <li><strong>Job Site:</strong> Materials delivered to specific jobs</li>
+                                        <li><strong>Vendor Consignment:</strong> Supplier-owned stock at your location</li>
+                                    </ul>
+                                    
+                                    <div class="alert alert-info">
+                                        <strong>💡 Pro Tip:</strong> Set up truck stock auto-replenishment so technicians always have common items without overstocking vehicles.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="expandable">
+                    <div class="expandable-header" onclick="toggleExpandable(this)">
+                        Vendor Performance Tracking <span class="arrow">▼</span>
+                    </div>
+                    <div class="expandable-content">
+                        <h4>📈 Key Metrics to Monitor:</h4>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                            <div style="background: #fff5f5; padding: 1rem; border-radius: 8px;">
+                                <h5>⏱️ Delivery Performance</h5>
+                                <ul>
+                                    <li>On-time delivery rate</li>
+                                    <li>Average lead time</li>
+                                    <li>Order accuracy</li>
+                                    <li>Damage rates</li>
+                                </ul>
+                            </div>
+                            <div style="background: #f0fff4; padding: 1rem; border-radius: 8px;">
+                                <h5>💵 Financial Performance</h5>
+                                <ul>
+                                    <li>Price competitiveness</li>
+                                    <li>Payment terms offered</li>
+                                    <li>Volume discounts available</li>
+                                    <li>Price stability</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="pricing-calculator">
+                            <h5>📊 Vendor Comparison Calculator</h5>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                                <div>
+                                    <h6>Vendor A</h6>
+                                    <div class="input-group">
+                                        <label>Price per Unit:</label>
+                                        <input type="number" id="vendorA_price" value="100" oninput="compareVendors()">
+                                    </div>
+                                    <div class="input-group">
+                                        <label>Lead Time (days):</label>
+                                        <input type="number" id="vendorA_lead" value="5" oninput="compareVendors()">
+                                    </div>
+                                    <div class="input-group">
+                                        <label>Shipping Cost:</label>
+                                        <input type="number" id="vendorA_shipping" value="25" oninput="compareVendors()">
+                                    </div>
+                                </div>
+                                <div>
+                                    <h6>Vendor B</h6>
+                                    <div class="input-group">
+                                        <label>Price per Unit:</label>
+                                        <input type="number" id="vendorB_price" value="95" oninput="compareVendors()">
+                                    </div>
+                                    <div class="input-group">
+                                        <label>Lead Time (days):</label>
+                                        <input type="number" id="vendorB_lead" value="10" oninput="compareVendors()">
+                                    </div>
+                                    <div class="input-group">
+                                        <label>Shipping Cost:</label>
+                                        <input type="number" id="vendorB_shipping" value="50" oninput="compareVendors()">
+                                    </div>
+                                </div>
+                                <div>
+                                    <h6>Vendor C</h6>
+                                    <div class="input-group">
+                                        <label>Price per Unit:</label>
+                                        <input type="number" id="vendorC_price" value="110" oninput="compareVendors()">
+                                    </div>
+                                    <div class="input-group">
+                                        <label>Lead Time (days):</label>
+                                        <input type="number" id="vendorC_lead" value="2" oninput="compareVendors()">
+                                    </div>
+                                    <div class="input-group">
+                                        <label>Shipping Cost:</label>
+                                        <input type="number" id="vendorC_shipping" value="0" oninput="compareVendors()">
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                                <h6>📊 Total Cost Comparison (10 units):</h6>
+                                <div id="vendorComparison"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-warning">
+                    <strong>🎯 Success Tip:</strong> Start with your top 20 most-used items. Perfect their inventory settings before expanding to your entire catalog.
+                </div>
+
             <!-- Testing Section -->
             <div id="testing" class="section">
                 <h2><span class="step-counter">7</span>Testing Your Pricebook</h2>
@@ -1116,7 +1382,7 @@
 
     <script>
         let currentSection = 'overview';
-        let serviceCost = 300; // Base labor cost for demo
+        let serviceCost = 1200; // Base labor cost for demo (4 hours × $300)
         let materialCosts = [];
         let equipmentCosts = [];
         let vendorConnections = [];
@@ -1206,19 +1472,19 @@
                 'HVAC': {
                     name: 'Install 3-Ton AC Unit',
                     sku: 'HVAC-AC-3T',
-                    labor: '8 hours × $85 = $680',
+                    labor: '8 hours × $300 = $2,400',
                     description: 'Complete installation of 16 SEER AC unit including electrical connections and refrigerant lines'
                 },
                 'Plumbing': {
                     name: 'Water Heater Installation',
                     sku: 'PLUMB-WH-50',
-                    labor: '4 hours × $75 = $300',
+                    labor: '4 hours × $300 = $1,200',
                     description: 'Install 50-gallon gas water heater with new venting and safety shutoffs'
                 },
                 'Electrical': {
                     name: 'Panel Upgrade to 200A',
                     sku: 'ELEC-PAN-200',
-                    labor: '6 hours × $95 = $570',
+                    labor: '6 hours × $300 = $1,800',
                     description: 'Upgrade electrical panel to 200A service with new main breaker and grounding'
                 }
             };
